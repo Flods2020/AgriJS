@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="agriJS2.css" />
+    <title>Agri JS 2</title>
+  </head>
+  <body>
+    <h1>Agri JS 2</h1>
+
+    <div class="container">
+      <div class="conts" id="inputContainer">
+        <form>
+          <div>
+            <label>
+              Culture :
+              <input type="text" id="itemInput" />
+            </label>
+          </div>
+          <div>
+            <label>
+              Semi :
+              <select name="months" id="semiInput">
+                <option value="Janvier">Janvier</option>
+                <option value="Fevrier">Fevrier</option>
+                <option value="Mars">Mars</option>
+                <option value="Avril">Avril</option>
+                <option value="Mai">Mai</option>
+                <option value="Juin">Juin</option>
+                <option value="Juillet">Juillet</option>
+                <option value="Aout">Aout</option>
+                <option value="Septembre">Septembre</option>
+                <option value="Octobre">Octobre</option>
+                <option value="Novembre">Novembre</option>
+                <option value="Decembre">Decembre</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              Recolte :
+              <input
+                type="number"
+                min="0"
+                max="9999"
+                step="5"
+                value="100"
+                id="recolteInput"
+              />
+              tonnes
+            </label>
+          </div>
+          <input type="submit" value="Ajouter" />
+          <div id="btnReset">Reset</div>
+        </form>
+      </div>
+
+      <div class="conts" id="cardsContainer"></div>
+      <div class="conts" id="chartsContainer"></div>
+    </div>
+
+    <script src="agriJS2.js"></script>
+  </body>
+</html>
