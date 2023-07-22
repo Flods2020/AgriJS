@@ -43,11 +43,17 @@ form.addEventListener("submit", (e) => {
     semis: semiInput.value,
     recolte: parseInt(recolteInput.value),
   };
-  //   console.warn(newAgriItem);
   agri.unshift(newAgriItem);
   cardsContainer.innerHTML = "";
+  window.localStorage.listAgri = "";
+  agri.map((el) => {
+    window.localStorage.listAgri += JSON.stringify(el) + ";";
+  });
 
-  console.log(agri);
+  itemInput.value = "";
+  semiInput.value = "Janvier";
+  recolteInput.value = 500;
+
   displayCards();
 });
 
@@ -70,14 +76,11 @@ const getList = () => {
   if (window.localStorage.listAgri) {
     return window.localStorage.listAgri;
   } else {
+    window.localStorage.listAgri = "";
     agri.map((el) => {
-      console.log(el);
-      return (window.localStorage.listAgri += el);
+      window.localStorage.listAgri += JSON.stringify(el) + ";";
     });
 
-    // for (let el of agri) {
-    //   window.localStorage.listAgri += el;
-    // }
     return window.localStorage.listAgri;
   }
 };
@@ -85,51 +88,59 @@ const getList = () => {
 const displayCards = () => {
   let addRecoltes = 0;
   let itemId = agri.length + 1;
+  let storeListItems = [];
 
-  //   console.log(getList());
+  getList()
+    .split(";")
+    .map((el) => {
+      storeListItems.push(el);
+    });
 
-  for (let item of agri) {
-    const card = {
-      tag: "div",
-      text: "",
-      attributes: [
-        { name: "class", value: "cardItem" },
-        { name: "id", value: item.id },
-      ],
-      children: [
-        {
-          tag: "h3",
-          text: item.nom,
-          attributes: [{ name: "class", value: "nomItem" }],
-          children: [],
-        },
-        {
-          tag: "p",
-          text: "Semis : " + item.semis,
-          attributes: [{ name: "class", value: "semiItem" }],
-          children: [],
-        },
-        {
-          tag: "p",
-          text: "Recolte : " + item.recolte + " tonnes",
-          attributes: [{ name: "class", value: "recolteItem" }],
-          children: [],
-        },
-        {
-          tag: "div",
-          text: "Supprimer",
-          attributes: [
-            { name: "class", value: "btnItem" },
-            { name: "id", value: item.id },
-          ],
-          children: [],
-        },
-      ],
-    };
+  for (let item of storeListItems) {
+    if (item !== "") {
+      let itemTemp = JSON.parse(item);
+      const card = {
+        tag: "div",
+        text: "",
+        attributes: [
+          { name: "class", value: "cardItem" },
+          { name: "id", value: itemTemp.id },
+        ],
+        children: [
+          {
+            tag: "h3",
+            text: itemTemp.nom,
+            attributes: [{ name: "class", value: "nomItem" }],
+            children: [],
+          },
+          {
+            tag: "p",
+            text: "Semis : " + itemTemp.semis,
+            attributes: [{ name: "class", value: "semiItem" }],
+            children: [],
+          },
+          {
+            tag: "p",
+            text: "Recolte : " + itemTemp.recolte + " tonnes",
+            attributes: [{ name: "class", value: "recolteItem" }],
+            children: [],
+          },
+          {
+            tag: "div",
+            text: "Supprimer",
+            attributes: [
+              { name: "class", value: "btnItem" },
+              { name: "id", value: itemTemp.id },
+            ],
+            children: [],
+          },
+        ],
+      };
 
-    cardsContainer.appendChild(createNodeElement(card));
-    addRecoltes += item.recolte;
-    itemId++;
+      cardsContainer.appendChild(createNodeElement(card));
+      addRecoltes += itemTemp.recolte;
+      itemId++;
+    }
   }
 
   setBtnItem();
@@ -142,13 +153,18 @@ const displayCards = () => {
 const setBtnItem = () => {
   btnItem = document.querySelectorAll(".btnItem");
   btnItem.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
       cardsContainer.innerHTML = "";
+      window.localStorage.listAgri = "";
       agri = [
         ...agri.filter((item) => {
           return item.id !== Number(btn.id);
         }),
       ];
+
+      agri.map((el) => {
+        window.localStorage.listAgri += JSON.stringify(el) + ";";
+      });
 
       displayCards();
     });
@@ -162,8 +178,9 @@ const displayChartsContainer = (rank, totalRecolte) => {
       (rank === highestR ? Math.max : Math.min)(...agri.map((el) => el.recolte))
   );
 
-  if (totalRecolte)
+  if (totalRecolte) {
     chartsContainer.innerHTML += `Total des récoltes : ${totalRecolte} tonnes<br>`;
+  }
 
   chartsContainer.innerHTML += `Plus ${
     rank === highestR ? "haute" : "basse"
